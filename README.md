@@ -18,7 +18,7 @@
 ## 🌎 Idiomas
 
 - Español (Nativo)
-- Inglés (Intermedio - certificado por MEP e INA)
+- Inglés (Intermedio - certificado por MEP, INA y UTN)
 
 ---
 
@@ -122,7 +122,7 @@
 ## 🌎 Languages
 
 - Spanish (Native)
-- English (Intermediate - certified by MEP & INA)
+- English (Intermediate - certified by MEP, INA & UTN)
 
 ---
 
