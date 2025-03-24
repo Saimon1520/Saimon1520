@@ -8,7 +8,7 @@
 
 ## 📫 ¿Cómo contactarme?
 
-[![Gmail](https://img.shields.io/badge/Gmail-saimongerardo1529@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:saimongerardo1529@gmail.com)
+[![Gmail](https://img.shields.io/badge/Gmail-saimongerardo1529@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)]
 [![Phone](https://img.shields.io/badge/Phone-+506%208861%204654-blue?style=for-the-badge&logo=phone)](tel:+50688614654)
 
 📍 San Carlos, Alajuela, Costa Rica
