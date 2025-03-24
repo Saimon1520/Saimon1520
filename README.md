@@ -41,11 +41,12 @@
 
 **Líder del Área Web | CODE-IN (08/2022 - 12/2023)**
 - Encargado de organizar y planificar el área web.
-- Guionista y desarrollador en Godot y React.
+- Desarrollador en React.
 
 **Miembro del Área de Videojuegos | CODE-IN (05/2022 - 10/2024)**
 - Planificación y documentación del sitio web para la Asociación Aguas Zarcas.
 - Desarrollo usando React.
+- Guionista
 
 ---
 
@@ -115,11 +116,12 @@
 
 **Web Area Leader | CODE-IN (08/2022 - 12/2023)**
 - Responsible for organizing and planning the web area.
-- Scriptwriter and developer in Godot and React.
+- Developer in React.
 
 **Video Game Area Member | CODE-IN (05/2022 - 10/2024)**
 - Planned and documented the website for Aguas Zarcas Association.
 - Developed using React.
+- Scriptwriter.
 
 ---
 
