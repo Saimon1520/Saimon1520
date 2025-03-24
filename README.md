@@ -92,7 +92,7 @@
 
 ## 📈 Activity Graph
 
-![GitHub Activity Graph](https://github-readme-activity-graph.cyclic.app/graph?username=Saimon1520&theme=tokyo-night)
+![GitHub Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=Saimon1520&theme=tokyo-night)
 
 ---
 
@@ -196,7 +196,7 @@
 
 ## 📈 Activity Graph
 
-![GitHub Activity Graph](https://github-readme-activity-graph.cyclic.app/graph?username=Saimon1520&theme=tokyo-night)
+![GitHub Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=Saimon1520&theme=tokyo-night)
 
 ---
 
