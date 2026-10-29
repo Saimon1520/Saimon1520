@@ -28,7 +28,7 @@ jobs:
       - name: Check token
         if: env.GH_TOKEN == ''
         run: echo "::warning::Falta el secret STATS_TOKEN; las tarjetas no se actualizaron."
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         if: env.GH_TOKEN != ''
       - name: Generate cards
         if: env.GH_TOKEN != ''
