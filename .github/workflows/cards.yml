@@ -1,6 +1,7 @@
 # Regenera las tarjetas de assets/ con datos reales (incluye repos privados) cada 6 horas.
 # Requiere el secret STATS_TOKEN (token de solo lectura a todos los repos); sin él no hace
 # nada, para no reemplazar las tarjetas por datos solo de repos públicos.
+# El token solo se expone al paso que genera las tarjetas; el push usa el GITHUB_TOKEN del repo.
 name: Update profile cards
 
 on:
@@ -8,6 +9,7 @@ on:
     - cron: "17 */6 * * *"
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - ".github/scripts/generate_cards.py"
       - ".github/workflows/cards.yml"
@@ -22,19 +24,28 @@ concurrency:
 jobs:
   cards:
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.STATS_TOKEN }}
+    timeout-minutes: 15
     steps:
       - name: Check token
-        if: env.GH_TOKEN == ''
-        run: echo "::warning::Falta el secret STATS_TOKEN; las tarjetas no se actualizaron."
-      - uses: actions/checkout@v5
-        if: env.GH_TOKEN != ''
+        id: token
+        env:
+          STATS_TOKEN: ${{ secrets.STATS_TOKEN }}
+        run: |
+          if [ -z "$STATS_TOKEN" ]; then
+            echo "::warning::Falta el secret STATS_TOKEN; las tarjetas no se actualizaron."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.token.outputs.ok == 'true'
       - name: Generate cards
-        if: env.GH_TOKEN != ''
+        if: steps.token.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.STATS_TOKEN }}
         run: python3 .github/scripts/generate_cards.py Saimon1520 assets
       - name: Commit and push
-        if: env.GH_TOKEN != ''
+        if: steps.token.outputs.ok == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -8,6 +8,7 @@ Uso: GH_TOKEN=... python3 generate_cards.py <usuario> <carpeta_salida>
 import datetime as dt
 import json
 import os
+import re
 import sys
 import urllib.request
 from collections import Counter
@@ -32,7 +33,7 @@ def api(path):
         req = urllib.request.Request(url, headers={"Authorization": f"Bearer {TOKEN}",
                                                    "Accept": "application/vnd.github+json"})
         try:
-            with urllib.request.urlopen(req) as r:
+            with urllib.request.urlopen(req, timeout=30) as r:
                 data = json.load(r)
                 link = r.headers.get("Link", "")
         except urllib.error.HTTPError as e:
@@ -46,23 +47,39 @@ def api(path):
     return out
 
 
-repos = [r for r in api("/user/repos?per_page=100&affiliation=owner")
-         if not r["fork"] and r["name"] != USER]
 since = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=365)).date()
-
 langs, commits_total, commits_year, prs = Counter(), 0, 0, 0
 monthly = Counter()
-for r in repos:
-    for lang, size in api(f"/repos/{r['full_name']}/languages").items():
-        if lang not in SKIP_LANGS:
-            langs[lang] += size
-    for c in api(f"/repos/{r['full_name']}/commits?author={USER}&per_page=100"):
-        day = dt.date.fromisoformat(c["commit"]["author"]["date"][:10])
-        commits_total += 1
-        if day >= since:
-            commits_year += 1
-            monthly[day.strftime("%Y-%m")] += 1
-    prs += sum(1 for p in api(f"/repos/{r['full_name']}/pulls?state=all&per_page=100") if p["user"]["login"] == USER)
+# Los logs de Actions son públicos: ante cualquier error se sale sin traceback para no
+# mostrar nombres de repos privados, y se conservan las tarjetas anteriores.
+try:
+    repos = [r for r in api("/user/repos?per_page=100&affiliation=owner")
+             if not r["fork"] and r["name"] != USER]
+    for r in repos:
+        for lang, size in api(f"/repos/{r['full_name']}/languages").items():
+            if lang not in SKIP_LANGS:
+                langs[lang] += size
+        for c in api(f"/repos/{r['full_name']}/commits?author={USER}&per_page=100"):
+            day = dt.date.fromisoformat(c["commit"]["author"]["date"][:10])
+            commits_total += 1
+            if day >= since:
+                commits_year += 1
+                monthly[day.strftime("%Y-%m")] += 1
+        prs += sum(1 for p in api(f"/repos/{r['full_name']}/pulls?state=all&per_page=100")
+                   if p["user"]["login"] == USER)
+except Exception as e:
+    sys.exit(f"Error consultando la API de GitHub ({type(e).__name__}"
+             f"{f' {e.code}' if hasattr(e, 'code') else ''}); se conservan las tarjetas anteriores.")
+
+# Si el token perdió acceso a los privados, los totales caen: no publicar datos incompletos.
+try:
+    prev = int(re.search(r"Total commits:</text><text[^>]*>([\d,]+)<", open(f"{OUT}/stats.svg").read())
+               .group(1).replace(",", ""))
+except (OSError, AttributeError):
+    prev = 0
+if commits_total < prev * 0.8:
+    sys.exit(f"Los commits bajaron de {prev} a {commits_total} (¿token sin acceso a los repos privados?); "
+             "se conservan las tarjetas anteriores.")
 
 public = sum(1 for r in repos if not r["private"])
 first_year = min(r["created_at"][:4] for r in repos)
